@@ -12,29 +12,38 @@ import {
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useCallback } from "react";
+import { useEffect } from "react"; // Changed from useCallback
 import { View } from "react-native";
 import "react-native-reanimated";
-// import "../styles/global.css";
+
 SplashScreen.preventAutoHideAsync();
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
+    // Use fontsLoaded and fontError to handle both success and error cases
     Rubik: Rubik_400Regular,
-    RubikBold: Rubik_700Bold,
+    Rubik_700Bold,
   });
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
+
+  useEffect(() => {
+    async function hideSplashScreen() {
+      if (fontsLoaded || fontError) {
+        // Hide splash screen when fonts are loaded or if there's an error
+        await SplashScreen.hideAsync();
+      }
     }
-  }, [fontsLoaded]);
-  if (!fontsLoaded) {
-    return <View onLayout={onLayoutRootView} style={{ flex: 1 }} />;
+    hideSplashScreen();
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) {
+    // Only render the View while fonts are loading and no error
+    return <View style={{ flex: 1 }} />;
   }
+
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
-        {/* Add your real screens here */}
         <Stack.Screen name="index" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />

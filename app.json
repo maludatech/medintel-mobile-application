@@ -36,6 +36,12 @@
     },
     "android": {
       "package": "com.anonymous.MedIntel"
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "63839d1e-fff4-40dd-b27d-1d30f95db961"
+      }
     }
   }
 }
